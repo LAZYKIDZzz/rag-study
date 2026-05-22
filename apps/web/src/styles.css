@@ -1,0 +1,302 @@
+:root {
+  color: #1d2522;
+  background: #f4f2ec;
+  font-family: "Aptos", "Segoe UI", sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  border: 1px solid #9b9686;
+  background: #fffaf0;
+  color: #1d2522;
+  border-radius: 6px;
+  padding: 0.65rem 0.85rem;
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: #315c53;
+}
+
+.primary {
+  background: #315c53;
+  border-color: #315c53;
+  color: #fffaf0;
+}
+
+.shell {
+  width: min(1500px, calc(100vw - 32px));
+  margin: 0 auto;
+  padding: 28px 0 40px;
+}
+
+.topbar,
+.summary,
+.panelHeading,
+.item,
+.actions {
+  display: flex;
+  align-items: center;
+}
+
+.topbar {
+  justify-content: space-between;
+  gap: 24px;
+  border-bottom: 2px solid #2d3532;
+  padding-bottom: 20px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  letter-spacing: 0;
+  color: #7a3f2f;
+  font-weight: 700;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 0;
+  font-size: clamp(2.2rem, 4vw, 4.4rem);
+  line-height: 0.95;
+}
+
+h2 {
+  font-size: 1.15rem;
+  margin-bottom: 0;
+}
+
+h3 {
+  font-size: 0.98rem;
+  margin-bottom: 0.25rem;
+}
+
+.status {
+  min-width: 220px;
+  border-left: 4px solid #9b9686;
+  padding: 10px 0 10px 14px;
+}
+
+.status span,
+.status small {
+  display: block;
+}
+
+.status.busy {
+  border-color: #b88924;
+}
+
+.status.error {
+  border-color: #b13f35;
+}
+
+.status.ok {
+  border-color: #315c53;
+}
+
+.summary {
+  gap: 22px;
+  flex-wrap: wrap;
+  padding: 18px 0;
+}
+
+.summary div {
+  min-width: 118px;
+}
+
+.summary strong {
+  display: block;
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.summary span,
+.item p,
+.itemMeta,
+.status small,
+.answer small {
+  color: #62655f;
+  font-size: 0.86rem;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.95fr) minmax(360px, 1.2fr) minmax(360px, 1.1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.panel {
+  background: #fcfaf4;
+  border: 1px solid #d6d0c0;
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.chat {
+  grid-row: span 2;
+}
+
+.panelHeading {
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+label {
+  display: grid;
+  gap: 6px;
+  font-weight: 700;
+  color: #315c53;
+}
+
+form,
+.chat,
+.memory {
+  display: grid;
+  gap: 14px;
+}
+
+input,
+textarea {
+  width: 100%;
+  border: 1px solid #bdb6a4;
+  border-radius: 6px;
+  background: #fffdf7;
+  color: #1d2522;
+  padding: 0.75rem;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.list,
+.trace,
+.memoryBlock {
+  display: grid;
+  gap: 12px;
+}
+
+.item {
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid #ded8ca;
+  padding-top: 12px;
+}
+
+.item > div:first-child {
+  min-width: 0;
+}
+
+.item h3,
+.item p {
+  overflow-wrap: anywhere;
+}
+
+.itemMeta {
+  display: grid;
+  min-width: 86px;
+}
+
+.actions {
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.answer {
+  border-left: 4px solid #7a3f2f;
+  padding-left: 14px;
+}
+
+.answer p {
+  white-space: pre-wrap;
+}
+
+.chunk {
+  border: 1px solid #d6d0c0;
+  border-radius: 6px;
+  padding: 12px;
+  background: #fffdf7;
+}
+
+.chunk header {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.chunk p {
+  margin-bottom: 0;
+  overflow-wrap: anywhere;
+}
+
+.empty {
+  color: #62655f;
+  margin-bottom: 0;
+}
+
+ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+
+@media (max-width: 1120px) {
+  .workspace {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .chat {
+    grid-row: auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .shell {
+    width: min(100vw - 20px, 700px);
+    padding-top: 18px;
+  }
+
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .status {
+    width: 100%;
+  }
+
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .item {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
