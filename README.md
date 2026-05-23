@@ -1,39 +1,31 @@
 # RAG-study
 
-`RAG-study` is a learning-first RAG knowledge base project. It is designed to be both runnable software and a comparison lab for how Java, Python, and Go backends support the same retrieval-augmented generation workflow.
+`RAG-study` 是一个学习型 RAG 项目，目标是让你通过文档和代码同时理解：
 
-## What This Project Builds
+- RAG 是什么
+- RAG 在工程里怎么落地
+- Python / Java / Go 三种后端怎么做出同一套能力
 
-* A React workbench for uploading documents, inspecting retrieval, chatting with a knowledge base, and comparing backend implementations.
-* A complete Python RAG backend built with FastAPI.
-* Java and Go backend implementations that follow the same API contract and RAG module boundaries.
-* Local infrastructure for PostgreSQL with pgvector, with room to add Qdrant as a dedicated vector database comparison.
-* Documentation for requirements, architecture, and RAG learning notes, all cross-linked.
+## 目录入口
 
-## Repository Layout
+- [文档中心](docs/README.md)
+- [前端工作台](apps/web/README.md)
+- [Python 后端](services/python-rag/README.md)
+- [Java 后端](services/java-rag/README.md)
+- [Go 后端](services/go-rag/README.md)
 
-```text
-apps/
-  web/                  React RAG workbench
-services/
-  python-rag/           FastAPI implementation and first complete backend
-  java-rag/             Java/Spring-style implementation
-  go-rag/               Go HTTP implementation
-docs/
-  requirements/         Product goals, scope, milestones
-  architecture/         System design, API contract, data model
-  learning/             RAG concept notes linked to code
-  decisions/            ADR-style technical decisions
-  runbooks/             Local development and troubleshooting
-infra/
-  docker-compose.yml    Local databases and middleware
-```
+## 建议阅读顺序
 
-## Quick Start
+1. [文档中心](docs/README.md)
+2. [RAG 从 0 到 1](docs/learning/rag-basics.md)
+3. [代码阅读地图](docs/architecture/code-reading-map.md)
+4. [共享 API 契约](docs/architecture/api-contract.md)
 
-Python backend:
+## 快速启动
 
-```bash
+### Python 后端
+
+```powershell
 cd services/python-rag
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
@@ -41,29 +33,35 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-Frontend:
+### 前端工作台
 
-```bash
+```powershell
 cd apps/web
 npm install
 npm run dev
 ```
 
-Local infrastructure:
+### 本地基础设施
 
-```bash
+```powershell
 docker compose -f infra/docker-compose.yml up -d
 ```
 
-## Reading Order
+## 仓库结构
 
-Start with [docs/README.md](docs/README.md), then read:
+```text
+apps/web/            前端工作台
+services/python-rag/ Python 参考实现
+services/java-rag/   Java 对照实现
+services/go-rag/     Go 对照实现
+docs/                中文文档中心
+infra/               本地基础设施
+```
 
-1. [Product scope](docs/requirements/product-scope.md)
-2. [System overview](docs/architecture/system-overview.md)
-3. [RAG pipeline learning guide](docs/learning/rag-pipeline.md)
-4. [API contract](docs/architecture/api-contract.md)
+## 进一步阅读
 
-## Current Implementation Strategy
+- [产品范围](docs/requirements/product-scope.md)
+- [系统总览](docs/architecture/system-overview.md)
+- [三后端实现对照](docs/architecture/backend-comparison.md)
+- [本地开发与联调](docs/runbooks/local-development.md)
 
-The first milestone uses Python as the complete backend so the full RAG pipeline can be inspected quickly. Java and Go follow the same API shape and module boundaries so differences in framework support are easier to compare.

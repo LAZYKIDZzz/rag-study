@@ -1,52 +1,52 @@
-# Go RAG Service
+# Go RAG 服务
 
-`services/go-rag` is the Go implementation of the shared RAG-study backend contract. It uses only the Go standard library and in-memory stores so the RAG stages are easy to inspect.
+`services/go-rag` 是本项目的 Go 对照实现，使用标准库把 RAG 的每一步显式展开，便于学习和比较。
 
-## Capabilities
+## 这个目录做什么
 
-* Document import with metadata.
-* Whitespace preprocessing and overlapping word chunking.
-* Deterministic hash embeddings for offline development.
-* In-memory cosine vector search.
-* Query rewriting with user memory facts.
-* Chat sessions with citations and memory updates.
-* Shared error shape from `docs/architecture/api-contract.md`.
+- 实现共享 API 契约
+- 展示 Go 的显式路由和服务编排
+- 作为 Python / Java 的实现对照
 
-## Run
+## 关键入口
 
-Prerequisite: Go 1.22 or newer.
+- HTTP 入口：[`internal/rag/http.go`](internal/rag/http.go)
+- 服务编排：[`internal/rag/service.go`](internal/rag/service.go)
+- 类型定义：[`internal/rag/types.go`](internal/rag/types.go)
+- 测试：[`internal/rag/pipeline_test.go`](internal/rag/pipeline_test.go)
 
-```bash
+## 运行
+
+```powershell
 cd services/go-rag
 go run ./cmd/server
 ```
 
-The service listens on `http://localhost:8080` by default. Set `PORT` to override it:
+默认端口：`8080`
 
-```bash
+可用 `PORT` 覆盖端口：
+
+```powershell
 $env:PORT = "8081"
 go run ./cmd/server
 ```
 
-## Verify
+## 验证
 
-```bash
+```powershell
 cd services/go-rag
 go test ./...
 ```
 
-Go is not installed in the current workspace, so these commands could not be executed during this implementation pass.
+## 示例流程
 
-## Example Flow
+1. `POST /documents`
+2. `POST /documents/{id}/index`
+3. `POST /retrieval/search`
 
-```bash
-curl -X POST http://localhost:8080/documents `
-  -H "Content-Type: application/json" `
-  -d "{\"title\":\"RAG notes\",\"content\":\"Chunking splits documents. Embeddings create vectors.\",\"metadata\":{\"source\":\"manual\"}}"
+## 相关文档
 
-curl -X POST http://localhost:8080/documents/doc_000001/index
+- [共享 API 契约](../../docs/architecture/api-contract.md)
+- [三后端实现对照](../../docs/architecture/backend-comparison.md)
+- [代码阅读地图](../../docs/architecture/code-reading-map.md)
 
-curl -X POST http://localhost:8080/retrieval/search `
-  -H "Content-Type: application/json" `
-  -d "{\"query\":\"What are embeddings?\",\"top_k\":3,\"filters\":{}}"
-```

@@ -1,41 +1,45 @@
-# Product Scope
+﻿# 产品范围（Product Scope）
 
-## Purpose
+## 1. 项目目的
 
-`RAG-study` teaches retrieval-augmented generation by building a complete knowledge base system and comparing how Java, Python, and Go backends implement the same workflow.
+`RAG-study` 是一个“可运行 + 可教学 + 可对比”的 RAG 学习平台。
 
-## MVP Goals
+它要同时满足：
 
-* Run a complete RAG flow through the Python backend.
-* Expose the same conceptual API contract for Python, Java, and Go services.
-* Provide a React workbench for document ingestion, retrieval inspection, chat, and memory inspection.
-* Document RAG concepts alongside code and architecture.
+- 让零基础用户理解 RAG 的核心流程。
+- 让开发者能对照代码看懂每个阶段如何实现。
+- 让团队比较 Python / Java / Go 在同一 RAG 任务下的工程差异。
 
-## Core User Workflows
+## 2. MVP 目标
 
-1. Add a source document.
-2. Index the document into chunks and embeddings.
-3. Ask a question.
-4. Inspect retrieved chunks and scores.
-5. Continue a chat session with memory.
-6. Compare how another backend implements the same flow.
+1. Python 后端实现完整 RAG 闭环。
+2. Java/Go 后端实现同 API 契约的等价能力。
+3. 前端提供文档写入、索引、检索、聊天、记忆观察能力。
+4. 文档将“知识讲解”和“代码路径”强关联。
 
-## Out of Scope for the First Milestone
+## 3. 核心用户工作流
 
-* Production authentication and authorization.
-* Cloud deployment.
-* Multi-tenant isolation.
-* Automated RAG evaluation.
-* Advanced graph-based retrieval.
+1. 添加文档。
+2. 触发索引（分块 + 向量化）。
+3. 提问并查看检索结果。
+4. 在会话中持续提问并观察记忆变化。
+5. 切换后端实现进行对比。
 
-## Architecture Links
+## 4. 首期不做（Out of Scope）
 
-* [System overview](../architecture/system-overview.md)
-* [API contract](../architecture/api-contract.md)
-* [Data model](../architecture/data-model.md)
+- 生产级鉴权与多租户。
+- 云上部署方案。
+- 自动化 RAG 评测平台。
+- 图检索或复杂知识图谱增强。
 
-## Learning Links
+## 5. 成功标准
 
-* [RAG pipeline](../learning/rag-pipeline.md)
-* [Embeddings and vectors](../learning/embeddings-and-vectors.md)
-* [Query rewriting and memory](../learning/query-rewriting-and-memory.md)
+- 初学者可按文档独立跑通一次完整流程。
+- 开发者可在 30 分钟内定位任一接口对应实现文件。
+- 前后端联调时字段口径一致（遵循 API 契约）。
+
+## 关联文档
+
+- [系统总览](../architecture/system-overview.md)
+- [共享 API 契约](../architecture/api-contract.md)
+- [RAG 从 0 到 1](../learning/rag-basics.md)

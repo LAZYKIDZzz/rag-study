@@ -1,35 +1,37 @@
-# Java RAG Service
+# Java RAG 服务
 
-`services/java-rag` is the Java implementation of the shared RAG-study backend contract. It uses Spring Boot style controllers and services, with explicit RAG modules for learning and comparison.
+`services/java-rag` 是本项目的 Java 对照实现，用来展示同一套 RAG 能力如何在 Spring 风格工程里落地。
 
-## Capabilities
+## 这个目录做什么
 
-* Document ingestion with metadata.
-* Text preprocessing and overlapping word chunking.
-* Deterministic local embeddings for offline development.
-* In-memory cosine vector search.
-* Query rewriting with user memory facts and previous chat turns.
-* Chat sessions with citations and memory updates.
-* Shared API routes from `docs/architecture/api-contract.md`.
+- 实现共享 API 契约
+- 对照 Python 的同类模块
+- 展示 Java 里的分层、DTO 和服务编排
 
-## Run
+## 关键入口
 
-Prerequisites:
+- 控制器：[`src/main/java/study/rag/api/RagController.java`](src/main/java/study/rag/api/RagController.java)
+- 服务层：[`src/main/java/study/rag/core/RagService.java`](src/main/java/study/rag/core/RagService.java)
+- 测试：[`src/test/java/study/rag/core/RagServiceTest.java`](src/test/java/study/rag/core/RagServiceTest.java)
 
-* Java 17 or newer.
-* Maven 3.9 or newer.
+## 运行
 
-```bash
+```powershell
 cd services/java-rag
 mvn spring-boot:run
 ```
 
-The service listens on `http://localhost:8082`.
+默认端口：`8082`
 
-## Verify
+## 验证
 
-```bash
+```powershell
 mvn test
 ```
 
-Maven is not installed in the current workspace, so this implementation pass could not execute the Java build locally.
+## 相关文档
+
+- [共享 API 契约](../../docs/architecture/api-contract.md)
+- [三后端实现对照](../../docs/architecture/backend-comparison.md)
+- [代码阅读地图](../../docs/architecture/code-reading-map.md)
+

@@ -1,0 +1,195 @@
+﻿<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RAG-study 文档中心</title>
+    <style>
+      :root {
+        --bg: #f7f6f2;
+        --panel: #fffdf8;
+        --text: #1b2a23;
+        --muted: #51615a;
+        --accent: #2f6f5d;
+        --line: #d9d3c5;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top right, #e2efe8 0, transparent 46%),
+          radial-gradient(circle at bottom left, #eee6d8 0, transparent 44%),
+          var(--bg);
+        font-family: "Microsoft YaHei UI", "PingFang SC", "Segoe UI", sans-serif;
+        line-height: 1.6;
+      }
+
+      .shell {
+        width: min(1080px, calc(100vw - 32px));
+        margin: 0 auto;
+        padding: 28px 0 40px;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      header {
+        border-bottom: 2px solid var(--text);
+        padding-bottom: 18px;
+        margin-bottom: 20px;
+      }
+
+      .eyebrow {
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        color: #7a4a2b;
+        font-size: 0.78rem;
+        font-weight: 700;
+      }
+
+      h1 {
+        margin-bottom: 8px;
+        font-size: clamp(1.9rem, 4.1vw, 3rem);
+        line-height: 1.1;
+      }
+
+      .lead {
+        color: var(--muted);
+        max-width: 72ch;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 16px;
+      }
+
+      .card h2 {
+        margin-bottom: 8px;
+        font-size: 1.05rem;
+      }
+
+      .card p {
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+
+      ul {
+        margin: 0;
+        padding-left: 1.1rem;
+      }
+
+      li + li {
+        margin-top: 4px;
+      }
+
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      .tip {
+        margin-top: 14px;
+        background: #f2f8f5;
+        border-left: 4px solid var(--accent);
+        padding: 10px 12px;
+        color: #25443a;
+      }
+
+      footer {
+        margin-top: 18px;
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 820px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <header>
+        <p class="eyebrow">RAG-study</p>
+        <h1>文档中心</h1>
+        <p class="lead">
+          面向 RAG 零基础与工程实现者的统一文档入口。建议从“阅读路径”开始，再按代码地图进入具体实现。
+        </p>
+      </header>
+
+      <section class="grid" aria-label="文档导航">
+        <article class="card">
+          <h2>快速开始</h2>
+          <p>先建立概念，再进入代码。</p>
+          <ul>
+            <li><a href="README.md">文档总览（README）</a></li>
+            <li><a href="learning/rag-basics.md">RAG 从 0 到 1</a></li>
+            <li><a href="learning/rag-pipeline.md">RAG 全流程（结合代码）</a></li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h2>架构与代码定位</h2>
+          <p>从系统结构到文件级入口。</p>
+          <ul>
+            <li><a href="architecture/system-overview.md">系统总览</a></li>
+            <li><a href="architecture/api-contract.md">共享 API 契约</a></li>
+            <li><a href="architecture/code-reading-map.md">代码阅读地图</a></li>
+            <li><a href="architecture/backend-comparison.md">三后端实现对照</a></li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h2>知识专题</h2>
+          <p>按模块拆解关键 RAG 概念。</p>
+          <ul>
+            <li><a href="learning/chunking.md">分块（Chunking）</a></li>
+            <li><a href="learning/embeddings-and-vectors.md">向量与检索</a></li>
+            <li><a href="learning/query-rewriting-and-memory.md">查询改写与记忆</a></li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h2>工程与演进</h2>
+          <p>本地运行、范围边界和决策背景。</p>
+          <ul>
+            <li><a href="runbooks/local-development.md">本地开发与联调</a></li>
+            <li><a href="requirements/product-scope.md">产品范围</a></li>
+            <li><a href="requirements/milestones.md">里程碑</a></li>
+            <li><a href="decisions/0001-python-first.md">ADR 0001</a></li>
+          </ul>
+        </article>
+      </section>
+
+      <p class="tip">
+        提示：若你的浏览器无法直接渲染 Markdown，请在项目根目录执行
+        <code>python -m http.server 9000</code>，然后访问
+        <code>http://localhost:9000/docs/</code>。
+      </p>
+
+      <footer>最后更新：2026-05-23</footer>
+    </main>
+  </body>
+</html>

@@ -1,51 +1,57 @@
-# System Overview
+﻿# 系统总览
 
-## High-Level Shape
+本项目是“学习优先”的 RAG 实验平台：
 
-```text
-React Workbench
-  -> Shared HTTP API Contract
-    -> Python FastAPI RAG service
-    -> Java RAG service
-    -> Go RAG service
-      -> Document store
-      -> Chunker
-      -> Embedding provider
-      -> Vector repository
-      -> Query processor
-      -> Memory store
-      -> Answer generator
-```
+- 前端：React Workbench，用于文档写入、检索追踪、聊天与记忆观察。
+- 后端：Python / Java / Go 三实现，遵循同一 API 契约。
+- 目标：同一 RAG 流程下，对比不同语言生态的工程组织方式。
 
-The first complete implementation is [services/python-rag](../../services/python-rag). Java and Go services follow the same capability contract so their framework choices can be compared.
-
-## Data Flow
+## 总体架构
 
 ```text
-Source document
-  -> preprocessing
-  -> chunking
-  -> embedding
-  -> vector storage
-  -> retrieval
-  -> answer prompt construction
-  -> model response
-  -> memory update
-  -> frontend trace display
+apps/web (React)
+  -> Shared API Contract
+    -> services/python-rag (FastAPI)
+    -> services/java-rag (Spring Boot)
+    -> services/go-rag (net/http)
+
+Each backend contains:
+  preprocessing -> chunking -> embeddings -> vector search -> answer generation -> memory
 ```
 
-This flow is explained conceptually in [RAG pipeline](../learning/rag-pipeline.md).
+## 端到端数据流
 
-## Design Principles
+```text
+文档写入
+  -> 文本清洗
+  -> 分块
+  -> 向量化
+  -> 向量存储
 
-* Keep API shapes comparable across backend languages.
-* Keep RAG stages explicit instead of hiding everything behind one framework call.
-* Default to local/offline behavior where possible so the project can be studied without API keys.
-* Use provider interfaces for embeddings and generation so real model providers can be added later.
+用户提问
+  -> 查询改写
+  -> 检索 top-k
+  -> 回答生成 + 引用
+  -> 记忆更新
+```
 
-## Code Links
+## 模块边界设计原则
 
-* Python service: [services/python-rag](../../services/python-rag)
-* Java service: [services/java-rag](../../services/java-rag)
-* Go service: [services/go-rag](../../services/go-rag)
-* Frontend: [apps/web](../../apps/web)
+1. `RAG 各阶段显式可见`：便于教学与排障。
+2. `三后端同契约`：便于公平对比。
+3. `默认离线可运行`：优先使用内存存储与本地 embedding。
+4. `可替换`：embedding、vector store、generator 都可逐步替换。
+
+## 代码入口
+
+- 前端：[`apps/web/src/App.tsx`](../../apps/web/src/App.tsx)
+- Python API：[`services/python-rag/app/main.py`](../../services/python-rag/app/main.py)
+- Python 编排：[`services/python-rag/app/rag/service.py`](../../services/python-rag/app/rag/service.py)
+- Java API：[`services/java-rag/src/main/java/study/rag/api/RagController.java`](../../services/java-rag/src/main/java/study/rag/api/RagController.java)
+- Go API：[`services/go-rag/internal/rag/http.go`](../../services/go-rag/internal/rag/http.go)
+
+## 进一步阅读
+
+- [代码阅读地图](code-reading-map.md)
+- [共享 API 契约](api-contract.md)
+- [RAG 全流程（结合代码）](../learning/rag-pipeline.md)
