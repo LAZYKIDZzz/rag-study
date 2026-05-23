@@ -1,75 +1,110 @@
-﻿# RAG 从 0 到 1（面向零基础）
+# RAG 从 0 到 1
 
-本页假设你完全不了解 RAG。读完后你应该能回答三件事：
+这篇面向完全没有 RAG 经验的读者。你可以把 RAG-study 当成一个“知识库问答系统”的拆解实验：它不是先追求生产级效果，而是把每一步拆开，让你看见数据如何从文档变成答案。
 
-1. RAG 到底解决什么问题。
-2. RAG 在工程里分成哪些阶段。
-3. 本项目代码里每个阶段在哪。
+## 先用一个业务场景理解
 
-## 1. 为什么需要 RAG
+假设公司有一批内部文档：产品手册、客服 SOP、接口说明、故障处理记录。用户问：
 
-大模型本身存在三个常见问题：
+> “用户上传失败时应该先排查什么？”
 
-- 训练数据有时间边界，可能不知道你的私有文档。
-- 回答可能“看起来合理但实际错误”（幻觉）。
-- 很难说明“答案来自哪里”。
+如果只把问题发给大模型，大模型可能不知道你的内部文档，也可能编一个看似合理的答案。RAG 的做法是：
 
-RAG（Retrieval-Augmented Generation，检索增强生成）通过“先检索、再回答”降低这些问题。
+1. 先从你的知识库里找出和“上传失败排查”最相关的文档片段。
+2. 再把这些片段连同用户问题一起交给模型。
+3. 模型基于证据回答，并尽量给出引用来源。
 
-## 2. 一句话理解 RAG
+所以 RAG 的核心不是“让模型记住更多知识”，而是“回答前临时把相关知识找出来”。
 
-RAG = `把你的文档做成可搜索知识库` + `回答前先从知识库取证据`。
+## RAG 解决什么问题
 
-## 3. 本项目中的 RAG 主流程
+| 问题 | 没有 RAG 时 | 有 RAG 后 |
+| --- | --- | --- |
+| 私有知识 | 模型不知道你的内部文档 | 从你的知识库检索片段 |
+| 知识更新 | 重新训练成本高 | 更新文档索引即可 |
+| 可追溯 | 难说明答案来自哪里 | 返回引用 chunk |
+| 幻觉 | 容易凭空补全 | 用检索证据约束回答 |
+| 成本 | 长文档全塞进 prompt 很贵 | 只放 top-k 相关片段 |
 
-1. 写入文档（`/documents`）
-2. 文档索引（`/documents/{id}/index`）
-   - 清洗文本
-   - 切分 chunk
-   - 生成向量
-   - 存入向量库
-3. 用户提问（`/retrieval/search` 或 `/chat/sessions/{id}/messages`）
-   - 查询改写
-   - 查询向量化
-   - 相似度检索
-4. 生成回答（带引用片段）
-5. 更新用户记忆（facts + recent summary）
+RAG 不能保证答案绝对正确。它只是把“生成答案”从纯模型记忆，改成“模型 + 外部知识库 + 引用证据”的工程流程。
 
-详见：[RAG 全流程（结合代码）](rag-pipeline.md)
+## 一句话公式
 
-## 4. 三个最容易混淆的概念
+```text
+RAG = 文档索引系统 + 检索系统 + 生成系统 + 质量控制
+```
 
-### 4.1 Chunk 是什么
+其中：
 
-chunk 是“可检索的文本片段”，不是整篇文档。检索时比整文更精准。
+- 文档索引系统：把原始文档变成可搜索的 chunk 和向量。
+- 检索系统：把用户问题变成查询，找到最相关的 chunk。
+- 生成系统：把问题和 chunk 交给模型或生成器，产出答案。
+- 质量控制：引用、重排、过滤、评测、日志、记忆等机制。
 
-详见：[分块（Chunking）](chunking.md)
+## 最小流程图
 
-### 4.2 Embedding 是什么
+```text
+                 离线或后台阶段
+┌──────────┐   ┌──────────┐   ┌──────────┐   ┌────────────┐
+│ 原始文档 │ -> │ 文本清洗 │ -> │ 文档分块 │ -> │ 生成向量并入库 │
+└──────────┘   └──────────┘   └──────────┘   └────────────┘
+                                                   │
+                                                   ▼
+                  用户提问阶段                 ┌────────┐
+┌──────────┐   ┌──────────┐   ┌──────────┐      │ 向量库 │
+│ 用户问题 │ -> │ 查询改写 │ -> │ 检索召回 │ <── │ /索引  │
+└──────────┘   └──────────┘   └──────────┘      └────────┘
+                                  │
+                                  ▼
+                            ┌──────────┐   ┌──────────┐
+                            │ 生成回答 │ -> │ 更新记忆 │
+                            └──────────┘   └──────────┘
+```
 
-embedding 是把文本映射为向量。语义越接近，向量越接近。
+## 每一步在知识库问答中承担什么作用
 
-详见：[向量与检索](embeddings-and-vectors.md)
+| 阶段 | 输入 | 输出 | 作用 |
+| --- | --- | --- | --- |
+| 文档写入 | 标题、正文、元数据 | Document | 保存知识来源 |
+| 文本清洗 | 原始正文 | 干净文本 | 减少空格、乱码、格式噪音 |
+| 分块 | 干净文本 | Chunk 列表 | 把长文档切成可检索片段 |
+| 向量化 | Chunk 文本 | Embedding | 让语义相近的文本在向量空间接近 |
+| 向量存储 | Chunk + Embedding | 可搜索索引 | 支持 top-k 相似度检索 |
+| 查询改写 | 用户问题 + 上下文 | 更完整查询 | 处理“它”“上一个”“第二点”这类省略表达 |
+| 检索召回 | 查询向量/关键词 | 候选 chunk | 找证据 |
+| 重排 | 候选 chunk | 更准排序 | 把最适合回答的问题片段排前面 |
+| 生成回答 | 问题 + 证据 | 答案 + 引用 | 组织语言，给用户可读答案 |
+| 记忆更新 | 会话内容 | facts/summary | 支持多轮连续问答和个性化上下文 |
 
-### 4.3 Query Rewriting 是什么
+## 当前项目实现到什么程度
 
-把口语化或上下文依赖问题改写为更适合检索的查询。
+RAG-study 当前实现的是“教学可观察版”：
 
-详见：[查询改写与记忆](query-rewriting-and-memory.md)
+- Python / Java / Go 都有同类 RAG API。
+- 文档、chunk、会话、记忆默认存在内存中。
+- embedding 是本地确定性哈希向量，便于离线跑通流程。
+- 检索是内存向量库 + 余弦相似度。
+- 回答生成是抽取式，不调用外部 LLM。
+- 查询改写与记忆已有基础能力，用来展示多轮问答链路。
 
-## 5. 先看哪套代码
+这意味着你可以先理解流程，再逐步替换生产组件：真实 embedding、pgvector/Qdrant、LLM 生成、rerank、评测等。
 
-建议先看 Python 实现，因为链路最直观、最完整：
+## 从代码哪里开始看
 
-- 入口：[`services/python-rag/app/main.py`](../../services/python-rag/app/main.py)
-- 编排：[`services/python-rag/app/rag/service.py`](../../services/python-rag/app/rag/service.py)
+建议先看 Python，因为它最适合作为学习基线：
 
-然后再看 Java/Go 对照：
+- API 入口：[`services/python-rag/app/main.py`](../../services/python-rag/app/main.py)
+- 主流程编排：[`services/python-rag/app/rag/service.py`](../../services/python-rag/app/rag/service.py)
+- 数据模型：[`services/python-rag/app/rag/models.py`](../../services/python-rag/app/rag/models.py)
 
-- Java：[`services/java-rag/src/main/java/study/rag/core/RagService.java`](../../services/java-rag/src/main/java/study/rag/core/RagService.java)
-- Go：[`services/go-rag/internal/rag/service.go`](../../services/go-rag/internal/rag/service.go)
+然后再看跨语言对照：
 
-## 下一步
+- Java 编排：[`services/java-rag/src/main/java/study/rag/core/RagService.java`](../../services/java-rag/src/main/java/study/rag/core/RagService.java)
+- Go 编排：[`services/go-rag/internal/rag/service.go`](../../services/go-rag/internal/rag/service.go)
 
-- 想继续概念：读 [RAG 全流程（结合代码）](rag-pipeline.md)
-- 想动手跑：读 [本地开发与联调](../runbooks/local-development.md)
+## 读完本页后继续
+
+- 想看完整流转：[RAG 全流程图解](rag-pipeline.md)
+- 想理解分块：[分块 Chunking](chunking.md)
+- 想理解向量检索：[向量与检索](embeddings-and-vectors.md)
+- 想理解更现代的策略：[进阶 RAG 技术地图](advanced-rag-patterns.md)
