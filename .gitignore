@@ -24,6 +24,12 @@ bin/
 .env.*
 !.env.example
 
+# Local AI workflow metadata
+.agents/
+.codex/
+.trellis/
+AGENTS.md
+
 # IDE / OS
 .idea/
 .vscode/
