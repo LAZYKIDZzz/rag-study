@@ -30,6 +30,7 @@ python -m http.server 9000
 3. [代码阅读地图](architecture/code-reading-map.md)：按文件顺序进入实现。
 4. [三后端实现对照](architecture/backend-comparison.md)：比较三种语言落地同一 RAG 流程的差异。
 5. [本地开发与联调](runbooks/local-development.md)：跑通前端和任一后端。
+6. [GitHub Pages 文档部署](runbooks/github-pages-deployment.md)：把 `docs/` 文档站发布到 GitHub Pages。
 
 ## 文档分区
 
